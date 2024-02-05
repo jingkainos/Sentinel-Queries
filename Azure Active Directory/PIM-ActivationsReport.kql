@@ -1,0 +1,8 @@
+AuditLogs
+| where TimeGenerated > ago(7d)
+| extend Actor = tostring(parse_json(tostring(InitiatedBy.user)).userPrincipalName)
+//Create a pivot table counting each action for each user
+| where OperationName contains "PIM" and OperationName !contains "Remove"
+| summarize count() by OperationName
+//| evaluate pivot(OperationName, count(), Actor)
+//| order by Actor asc
